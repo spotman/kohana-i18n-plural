@@ -5,49 +5,17 @@
  * @package    Plurals
  * @category   Unit tests
  * @author     Korney Czukowski
- * @copyright  (c) 2015 Korney Czukowski
+ * @copyright  (c) 2012 Korney Czukowski
  * @license    MIT License
  */
 namespace I18n\Tests;
 use I18n;
 
 /**
- * Test translation reader without predefined translations, used to test with multiple readers.
+ * Test translation reader that returns predefined results
  */
-class CleanReader implements I18n\Reader\ReaderInterface, I18n\Reader\PrefetchInterface
-{
-	public $translations = array();
+class Reader implements I18n\Reader\ReaderInterface {
 
-	public function __construct(array $additional_translations = array())
-	{
-		$this->translations = array_merge_recursive($this->translations, $additional_translations);
-	}
-
-	public function get($string, $lang = NULL)
-	{
-		if (isset($this->translations[$lang][$string]))
-		{
-			return $this->translations[$lang][$string];
-		}
-		return NULL;
-	}
-
-	public function load_translations($lang)
-	{
-		if (isset($this->translations[$lang]))
-		{
-			return $this->translations[$lang];
-		}
-		return array();
-	}
-}
-
-/**
- * Test translation reader that returns predefined results. Equipped with the option to add
- * additional translations in constructor to test usage with multiple readers.
- */
-class DefaultReader extends CleanReader
-{
 	public $translations = array(
 		'en' => array(
 			':title person' => array(
@@ -62,19 +30,6 @@ class DefaultReader extends CleanReader
 				'three' => ':count countables',
 				'other' => ':count countables',
 			),
-			':count things' => array(
-				'one' => ':count thing',
-				'other' => ':count things',
-			),
-			':count :items' => ':count :items',
-			'in_directories' => array(
-				'one' => 'in one directory',
-				'other' => 'in :count directories',
-			),
-			'files_found' => array(
-				'one' => 'Found :count file',
-				'other' => 'Found :count files',
-			),
 		),
 		'es' => array(
 			'Spanish' => 'Español',
@@ -85,47 +40,25 @@ class DefaultReader extends CleanReader
 				'ms' => ':title žena',
 				'other' => ':title člověk',
 			),
-			':count countable' => array(
-				'one' => ':count počítatelná',
-				'few' => ':count počítatelné',
-				'other' => ':count počítatelných',
-			),
-			':count things' => array(
-				'one' => ':count věc',
-				'few' => ':count věci',
-				'other' => ':count věcí',
-			),
 			'something :what' => 'něco :what',
-			'in_directories' => array(
-				'one' => 'v jedné složce',
-				'few' => 've :count složkách',
-				'other' => 'v :count složkách',
-			),
-			'files_found' => array(
-				'one' => 'Byl nalezen :count soubor',
-				'few' => 'Byly nalezeny :count soubory',
-				'other' => 'Bylo nalezeno :count souborů',
-			),
-		),
-		'ru' => array(
-			'in_directories' => array(
-				'one' => 'в :count папке',
-				'other' => 'в :count папках',
-			),
-			'files_found' => array(
-				'one' => 'Найден :count файл',
-				'few' => 'Найдены :count файла',
-				'other' => 'Найдено :count файлов',
-			),
 		),
 	);
+
+	public function get($string, $lang = NULL)
+	{
+		if (isset($this->translations[$lang][$string]))
+		{
+			return $this->translations[$lang][$string];
+		}
+		return NULL;
+	}
 }
 
 /**
  * Test plural rules that return predefined values
  */
-class Rules implements I18n\Plural\PluralInterface
-{
+class Rules implements I18n\Plural\PluralInterface {
+
 	public $rules = array(
 		0 => 'zero',
 		1 => 'one',
@@ -142,8 +75,8 @@ class Rules implements I18n\Plural\PluralInterface
 /**
  * Plural rules helper class
  */
-class Generator
-{
+class Generator {
+
 	/**
 	 * @var  array  Class options
 	 */
@@ -195,8 +128,7 @@ class Generator
 		{
 			if (($sort_function = $this->_sort_function($function)))
 			{
-				if (($compare_result = call_user_func($sort_function, $locale1, $locale2)) !== 0)
-				{
+				if (($compare_result = call_user_func($sort_function, $locale1, $locale2)) !== 0) {
 					return $compare_result;
 				}
 			}
