@@ -29,7 +29,7 @@ class Core
 	 */
 	private $_use_fallback = TRUE;
 	/**
-	 * @var  boolean  Local cache for language fallback paths.
+	 * @var  string[][]  Local cache for language fallback paths.
 	 */
 	private $_fallback_paths = array();
 
@@ -116,8 +116,8 @@ class Core
 	public function plural($string, $count = 0, $lang = NULL)
 	{
 		// Get the translation form key
-		$form = $this->plural_rules($lang)
-			->plural_category($count);
+		$form = $count ? $this->plural_rules($lang)->plural_category($count) : 'none';
+
 		// Return the translation for that form
 		return $this->form($string, $form, $lang);
 	}
@@ -138,11 +138,11 @@ class Core
 		$lang_fallback_path = $this->_use_fallback
 			? $this->split_lang($lang)
 			: array($lang);
-		foreach ($lang_fallback_path as $lang)
+		foreach ($lang_fallback_path as $fallback_lang)
 		{
 			foreach ($this->_readers as $reader)
 			{
-				if (($translation = $reader->get($string, $lang)))
+				if ($translation = $reader->get($string, $fallback_lang))
 				{
 					return $translation;
 				}
@@ -196,7 +196,7 @@ class Core
 	 * Plural rules lazy initialization
 	 * 
 	 * @param   string  $lang
-	 * @return  Plural\Rules
+	 * @return  Plural\PluralInterface
 	 */
 	protected function plural_rules($lang)
 	{

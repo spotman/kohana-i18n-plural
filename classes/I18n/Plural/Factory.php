@@ -15,7 +15,7 @@ class Factory
 	 * Chooses inflection class to use according to CLDR plural rules
 	 * 
 	 * @param   string  $prefix
-	 * @return  Plural\PluralInterface
+	 * @return  PluralInterface
 	 */
 	public function create_rules($prefix)
 	{
