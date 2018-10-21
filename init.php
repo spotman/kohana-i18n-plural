@@ -14,8 +14,9 @@ if ( ! function_exists('___'))
 	 * @param   array   $values param values to insert
 	 * @param   string  $lang target language
 	 * @return  string
+     * @deprecated 
 	 */
-	function ___($string, $context = 0, $values = NULL, $lang = NULL)
+	function ___($string, $context = 0, $values = NULL, $lang)
 	{
 		static $i18n;
 		if ($i18n === NULL)
@@ -31,10 +32,7 @@ if ( ! function_exists('___'))
 			$values = $context;
 			$context = 0;
 		}
-		if ($lang === NULL)
-		{
-			$lang = I18n::lang();
-		}
+
 		return $i18n->translate($string, $context, $values, $lang);
 	}
 }
